@@ -1,0 +1,5 @@
+---
+STATIC_ROOT: /static
+PIDFILE_DIR: /pid
+ASSET_PATHS:
+  - /tmp/dist

@@ -1,0 +1,14 @@
+---
+- name: Install EPEL
+  yum: name=epel-release state=latest update_cache=yes
+- name: Install nginx
+  yum: name=nginx state=latest
+- name: Put nginx config
+  copy: src=nginx.conf dest=/etc/nginx/nginx.conf
+- name: Make static dir
+  file: name={{ STATIC_ROOT }}/ state=directory owner=nginx
+- name: Make pidfile dir writeable
+  file: name={{ PIDFILE_DIR }}/ state=directory owner=nginx
+- name: Put static assets
+  copy: src={{ item }} dest={{ STATIC_ROOT }}/ owner=nginx
+  with_items: {{ ASSET_PATHS }}
