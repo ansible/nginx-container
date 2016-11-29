@@ -1,29 +1,45 @@
----
 language: python
-python: "2.7"
+dist: trusty
+sudo: required
 
-# Use the new container infrastructure
-sudo: false
+services:
+  - docker
 
-# Install ansible
-addons:
-  apt:
-    packages:
-    - python-pip
+before_install:
+  - sudo apt-add-repository 'deb http://archive.ubuntu.com/ubuntu trusty-backports universe'
+  - sudo apt-get update -qq
+  - sudo apt-get install -y -o Dpkg::Options::="--force-confold" --force-yes docker-engine
 
 install:
-  # Install ansible
+  # Install the latest Ansible Container and Ansible
+  - pip install git+https://github.com/ansible/ansible-container.git
   - pip install ansible
 
-  # Check ansible version
-  - ansible --version
-
-  # Create ansible.cfg with correct roles_path
-  - printf '[defaults]\nroles_path=../' >ansible.cfg
-
 script:
-  # Basic role syntax check
-  - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+  # Make sure docker is functioning
+  - docker version
+  - docker-compose version
+  - docker info
+
+  # Create an Ansible Container project
+  - mkdir -p tests
+  - cd tests
+  - ansible-container init
+
+  # Install the role into the project
+  - echo "Installing and testing git+https://github.com/${TRAVIS_REPO_SLUG},${TRAVIS_COMMIT}"
+  - ansible-container install git+https://github.com/${TRAVIS_REPO_SLUG},${TRAVIS_COMMIT}
+
+  # Build the service image
+  - ansible-container build
+
+  # Start the service
+  - ansible-container run -d --production
+  - docker ps
+
+  # Run tests
+  - ansible-playbook test.yml
 
 notifications:
+  email: false
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

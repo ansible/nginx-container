@@ -1,5 +1,6 @@
 ---
 STATIC_ROOT: /static
-PIDFILE_DIR: /pid
-ASSET_PATHS:
-  - /tmp/dist
+PIDFILE_DIR: /run/nginx
+ASSET_PATHS: []
+PROXY_DJANGO: no 
+PROXY_DJANGO_PASS: "http://django:8080/"

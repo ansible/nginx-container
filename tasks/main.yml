@@ -1,14 +1,129 @@
 ---
 - name: Install EPEL
-  yum: name=epel-release state=latest update_cache=yes
+  yum:
+    name: epel-release
+    state: latest
+    update_cache: yes
+
 - name: Install nginx
-  yum: name=nginx state=latest
+  yum:
+    name: "{{ item }}" 
+    state: latest
+  with_items:
+    - nginx
+    - rsync 
+
+- name: Install dumb init
+  get_url:
+    url: https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64
+    dest: /usr/bin/dumb-init
+    owner: root
+    group: root
+    mode: 0775
+
+- name: Update nginx user
+  user:
+    name: nginx
+    uid: 1000
+    group: root
+    createhome: no
+
 - name: Put nginx config
-  copy: src=nginx.conf dest=/etc/nginx/nginx.conf
-- name: Make static dir
-  file: name="{{ STATIC_ROOT }}/" state=directory owner=nginx
-- name: Make pidfile dir writeable
-  file: name="{{ PIDFILE_DIR }}/" state=directory owner=nginx
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0664
+
+- name: Create directories, if they don't exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+  with_items:
+  - "{{ STATIC_ROOT }}"
+  - "{{ PIDFILE_DIR }}"
+  - /var/log/nginx
+  - /var/lib/nginx
+
+- name: Make directories owned by nginx:root 
+  command: chown nginx:root {{ item }}
+  with_items:
+  - "{{ STATIC_ROOT }}"
+  - "{{ PIDFILE_DIR }}"
+  - /var/log/nginx
+  - /var/lib/nginx
+
+- name: Make directories writable by root group 
+  command: chmod 775 {{ item }}
+  with_items:
+  - /var
+  - /var/log
+  - /var/lib 
+
+- name: Make directories writable to nginx:root 
+  command: chmod 775 {{ item }}
+  with_items:
+  - "{{ STATIC_ROOT }}"
+  - "{{ PIDFILE_DIR }}"
+  - /var/log/nginx
+  - /var/lib/nginx
+
+- name: Remove /var/cache/nginx, if it exists
+  file:
+    path: /var/cache/nginx
+    state: absent
+
+- name: Create /var/cache/nginx
+  file:
+    path: /var/cache/nginx/client_temp
+    state: directory
+    owner: nginx
+    group: root
+    mode: 0775
+    recurse: yes
+ 
+- name: Create tmp directories with correct permissions
+  file:
+    path: "/var/lib/nginx/{{ item }}" 
+    state: directory
+    owner: nginx
+    group: root
+    mode: 0775
+  with_items:
+  - tmp
+  - tmp/client_body
+  - tmp/fastcgi
+  - tmp/proxy
+  - tmp/scgi
+  - tmp/uwsgi
+
 - name: Put static assets
-  copy: src="{{ item }}" dest="{{ STATIC_ROOT }}/" owner=nginx
+  synchronize:
+    src: "{{ item }}/"
+    dest: "{{ STATIC_ROOT }}/"
   with_items: "{{ ASSET_PATHS }}"
+  remote_user: nginx
+
+- name: Itemize default nginx static assets
+  find: 
+    paths: /usr/share/nginx/html
+    recurse: yes
+  register: default_assets
+
+- name: Copy default content when no static assets
+  copy:
+    src: "{{ item.path }}"
+    dest: "{{ STATIC_ROOT }}"
+    remote_src: yes
+    owner: nginx
+    group: root
+    mode: 0664
+  with_items: "{{ default_assets.files }}" 
+  when: "ASSET_PATHS | length == 0"
+
+- name: Clean yum cache
+  command: yum clean all

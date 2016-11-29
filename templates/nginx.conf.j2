@@ -1,5 +1,6 @@
 daemon off;
 worker_processes auto;
+pid {{ PIDFILE_DIR }}/nginx.pid;
 
 events {
     worker_connections 1024;
@@ -28,7 +29,7 @@ http {
         listen       8000 default_server;
         listen       [::]:8000 default_server;
         server_name  _;
-        root         /static;
+        root         {{ STATIC_ROOT }};
 
         # Load configuration files for the default server block.
         include /etc/nginx/default.d/*.conf;
@@ -37,7 +38,18 @@ http {
         location /static/ {
             root /;
         }
-
+{% if PROXY_DJANGO %}       
+        location / {
+            proxy_pass_header Server;
+            proxy_set_header Host $http_host;
+            proxy_redirect off;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Scheme $scheme;
+            proxy_connect_timeout 10;
+            proxy_read_timeout 10;
+            proxy_pass {{ PROXY_DJANGO_PASS }};
+        }
+{% endif %}
         error_page 404 /404.html;
             location = /static/40x.html {
         }
