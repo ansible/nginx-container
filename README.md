@@ -44,11 +44,14 @@ ASSET_PATHS: []
 > *NOTE* paths must be valid within the Ansible build container. If you're copying source files, mount the source
   directory to the build container using --with-volumes.
 
-PROXY_DJANGO: no
+PROXY: no
 > When using this role as part of the demo app, nginx needs to proxy the django service, in which case set this to 'yes'. 
 
-PROXY_DJANGO_PASS: http://django:8080/
-> The URL where proxied request will be sent.
+PROXY_PASS: "" 
+> The address of the backend server accepting the proxied requests. For example: `http://django:8080` 
+
+PROXY_LOCATION: ""
+> A string containing an optional modifier and a matching pattern. Requests that contain the matching pattern are forwarded to the PROXY_PASS address. For example,`~* /(api|static)` will forward requests that start with `/api` ro `/static`.  
 
 ## Dependencies
 
