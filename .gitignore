@@ -1,4 +1,4 @@
 .idea/
 *.out
 *.retry
-tests/ansible/
+ansible/

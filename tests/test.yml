@@ -27,4 +27,3 @@
     assert:
       that: "'nginx' in output.content"
 
- 
