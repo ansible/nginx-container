@@ -55,7 +55,7 @@
   file:
     path: "/var/log/nginx/{{ item }}"
     state: absent 
-  with_files:
+  with_items:
   - access.log
   - error.log
 
