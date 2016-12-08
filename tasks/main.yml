@@ -1,7 +1,7 @@
 ---
 - name: Copy repo file
   copy:
-    src: "{{ roles_path }}/files/nginx.repo"
+    src: "{{ role_path }}/files/nginx.repo"
     dest: /etc/yum.repos.d/nginx.repo
     owner: root
     group: root
