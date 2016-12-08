@@ -35,10 +35,6 @@ http {
         include /etc/nginx/default.d/*.conf;
 
 
-        location /static/ {
-            root /;
-        }
-
 {% if PROXY %}       
         location {{ PROXY_LOCATION }} {
             proxy_pass_header Server;
@@ -53,11 +49,11 @@ http {
 {% endif %}
 
         error_page 404 /404.html;
-            location = /static/40x.html {
+            location = /40x.html {
         }
 
         error_page 500 502 503 504 /50x.html;
-            location = /static/50x.html {
+            location = /50x.html {
         }
     }
 }
