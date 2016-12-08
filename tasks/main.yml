@@ -51,6 +51,14 @@
   - /var/log/nginx
   - /var/lib/nginx
 
+- name: Remove logs files, if they exist
+  file:
+    path: "/var/log/{{ item }}"
+    state: absent
+  with_items:
+  - error.log
+  - access.log
+ 
 - name: Make directories owned by nginx:root 
   command: chown nginx:root {{ item }}
   with_items:
