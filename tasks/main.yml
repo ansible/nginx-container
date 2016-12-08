@@ -1,9 +1,11 @@
 ---
-- name: Install EPEL
-  yum:
-    name: epel-release
-    state: latest
-    update_cache: yes
+- name: Copy repo file
+  copy:
+    src: "{{ roles_path }}/files/nginx.repo"
+    dest: /etc/yum.repos.d/nginx.repo
+    owner: root
+    group: root
+    mode: 0664
 
 - name: Install nginx
   yum:
@@ -127,3 +129,4 @@
 
 - name: Clean yum cache
   command: yum clean all
+
