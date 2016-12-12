@@ -1,7 +1,5 @@
 #nginx-container 
 
-[![Build Status](https://travis-ci.org/chouseknecht/nginx-container-1.svg?branch=master)](https://travis-ci.org/chouseknecht/nginx-container-1)
-
 Adds an nginx service to your [Ansible Container](https://github.com/ansible/ansible-container) project. Run the following commands
 to install the service:
 
@@ -10,10 +8,8 @@ to install the service:
 $ cd myproject
 
 # Install the service
-$ ansible-container install j00bar.nginx-container
+$ ansible-container install ansible.nginx-container
 ```
-
-This role is consumed by the [Ansible Container demo project](https://github.com/j00bar/django-gulp-nginx).
 
 ## Requirements
 
@@ -57,7 +53,7 @@ PROXY_LOCATION: ""
 
 None.
 
-## Development
+## Contributing
 
 For convenience, as you're working on changes to this role, you can test by using the following workflow:
 
@@ -77,10 +73,10 @@ $ ./build.sh
 
 A couple of notes:
 
-- You have to push your changes in order for the build to pick them up.
+- You must `git push` your changes in order for the build to pick them up.
 - Modify build.sh to point to your fork of this role.
-- If all goes well and the build succeeds, the container built from your latest commit will be running in the background.
-- The running container will publish port 8000:8000, so if you point a browser to localhost:8000, you should see the dfault nginx page .
+- If all goes well, and the build succeeds, the container built from your latest commit will be running in the background.
+- The running container will publish port 8000:8000, so if you point a browser to [http://localhost:8000](http://localhost:8000), you should see the dfault nginx page .
 
 ## License
 
@@ -88,5 +84,4 @@ Apache v2
 
 ## Author Information
 
-[@j00bar](https://github.com/j00bar)
-
+See [AUTHORS](./AUTHORS) for a list of contributors. Thanks everyone!
