@@ -81,10 +81,7 @@
   - /var/lib/nginx
 
 - name: Link log files to stdout 
-  file:
-    path: "/var/log/nginx/{{ item }}"
-    src: /dev/stdout
-    state: link
+  command: "ln -sf /dev/stdout /var/log/nginx/{{ item }}"
   with_items:
   - access.log
   - error.log
