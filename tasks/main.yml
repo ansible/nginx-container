@@ -80,6 +80,15 @@
   - /var/log/nginx
   - /var/lib/nginx
 
+- name: Link log files to stdout 
+  file:
+    path: "/var/log/nginx/{{ item }}"
+    src: /dev/stdout
+    state: link
+  with_items:
+  - access.log
+  - error.log
+
 - name: Remove /var/cache/nginx, if it exists
   file:
     path: /var/cache/nginx
