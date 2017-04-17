@@ -1,12 +1,8 @@
-nginx:
-  image: centos:7
-  ports:
-  - 8000:8000
-  user: 'nginx'
-  command: ['/usr/bin/dumb-init', 'nginx', '-c', '/etc/nginx/nginx.conf']
-  dev_overrides:
-    ports: []
-    command: 'bin/false'
-  options:
-    kube:
-      runAsUser: 1000 
+from: centos:7
+ports:
+- 8000:8000
+user: 'nginx'
+command: ['/usr/bin/dumb-init', 'nginx', '-c', '/etc/nginx/nginx.conf']
+dev_overrides:
+  ports: []
+  command: 'bin/false'
