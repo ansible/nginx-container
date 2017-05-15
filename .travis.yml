@@ -7,7 +7,7 @@ before_install:
 - sudo apt-add-repository 'deb http://archive.ubuntu.com/ubuntu trusty-backports universe'
 - sudo apt-get update -qq
 install:
-- pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container
+- pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
 - pip install ansible
 script:
 - docker version
@@ -16,9 +16,17 @@ script:
 - mkdir -p tests
 - cd tests
 - ansible-container init
+
+# Build the conductor image
+- ansible-container build
+
 - echo "Installing and testing git+https://github.com/${TRAVIS_REPO_SLUG},${TRAVIS_COMMIT}"
 - ansible-container install git+https://github.com/${TRAVIS_REPO_SLUG},${TRAVIS_COMMIT}
+
+# Build the service
 - ansible-container build
+
+# Run the service and test it
 - ansible-container run -d --production
 - docker ps
 - ansible-playbook test.yml
