@@ -2,3 +2,7 @@
 *.out
 *.retry
 ansible/
+tests/ansible-requirements.txt
+tests/container.yml
+tests/meta.yml
+tests/requirements.yml

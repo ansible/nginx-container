@@ -4,7 +4,7 @@
   gather_facts: no
   tasks:
 
-  - name: Remove the ansible directory
+  - name: Remove output file
     file:
       path: "{{ item }}" 
       state: absent
@@ -13,11 +13,14 @@
 
   - name: Init the ansible directory 
     command: ansible-container init
+
+  - name: Build the conductor
+    command: ansible-container build
     
   - name: Install this role with latest commit   
     shell: "ansible-container install git+https://github.com/ansible/nginx-container.git,$(git rev-parse HEAD)"
       
-  - name: Build the project
-    shell: ansible-container --debug build 2>&1 | tee -a build.out
-    ignore_errors: yes
+  #- name: Build the project
+  #  shell: ansible-container --debug build 2>&1 | tee -a build.out
+  #  ignore_errors: yes
 
