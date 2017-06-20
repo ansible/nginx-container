@@ -10,6 +10,10 @@
       state: absent
     with_items:
     - build.out
+    - container.yml
+    - requirements.yml
+    - meta.yml
+    - ansible-requirements.txt
 
   - name: Init the ansible directory 
     command: ansible-container init
