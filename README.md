@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/ansible/nginx-container.svg?branch=master)](https://travis-ci.org/ansible/nginx-container)
 
-#nginx-container 
+# nginx-container 
 
 Adds an nginx service to your [Ansible Container](https://github.com/ansible/ansible-container) project. Run the following commands
 to install the service:

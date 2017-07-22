@@ -17,6 +17,8 @@ script:
 - docker info
 - mkdir -p tests
 - cd tests
+
+# Init the project 
 - ansible-container init
 
 # Build the conductor image
@@ -32,6 +34,7 @@ script:
 - ansible-container run -d --production
 - docker ps
 - ansible-playbook test.yml
+
 notifications:
   email: false
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
