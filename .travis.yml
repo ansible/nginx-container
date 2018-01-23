@@ -31,9 +31,10 @@ script:
 - ansible-container build
 
 # Run the service and test it
-- ansible-container run -d --production
+- ansible-container run --production
 - docker ps
-- ansible-playbook test.yml
+- docker logs tests_nginx-container_1
+- ansible-playbook -i inventory test.yml
 
 notifications:
   email: false
